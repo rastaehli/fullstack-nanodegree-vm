@@ -3,25 +3,37 @@
 # tournament.py -- implementation of a Swiss-system tournament
 #
 
-import psycopg2
+import db
+import match_mod
+import registration_mod
+import tournament_mod
+import person_mod
 
-
-def connect():
-    """Connect to the PostgreSQL database.  Returns a database connection."""
-    return psycopg2.connect("dbname=tournament")
-
+# init database access objects
+tournamentDb = db.DB("dbname=tournament")
+matches = match_mod.MatchStore(tournamentDb)
+registrations = registration_mod.RegistrationStore(tournamentDb)
+tournaments = tournament_mod.TournamentStore(tournamentDb)
+tournaments.deleteAll()
+tournaments.createTournament("test")
+tournament = tournaments.getByName("test")
+print "initialized: ", tournament
+persons = person_mod.PersonStore(tournamentDb)
 
 def deleteMatches():
     """Remove all the match records from the database."""
+    matches.deleteAll()
 
 
 def deletePlayers():
     """Remove all the player records from the database."""
+    persons.deleteAll()
+    registrations.deleteAll()
 
 
 def countPlayers():
     """Returns the number of players currently registered."""
-
+    return registrations.countAll()
 
 def registerPlayer(name):
     """Adds a player to the tournament database.
@@ -32,6 +44,7 @@ def registerPlayer(name):
     Args:
       name: the player's full name (need not be unique).
     """
+    return registrations.createRegistration(name,tournament)
 
 
 def playerStandings():
@@ -47,6 +60,7 @@ def playerStandings():
         wins: the number of matches the player has won
         matches: the number of matches the player has played
     """
+    return tournament.playerStandings()
 
 
 def reportMatch(winner, loser):
@@ -56,6 +70,7 @@ def reportMatch(winner, loser):
       winner:  the id number of the player who won
       loser:  the id number of the player who lost
     """
+    tournament.recordOutcome(winner,loser)
  
  
 def swissPairings():
@@ -73,5 +88,6 @@ def swissPairings():
         id2: the second player's unique id
         name2: the second player's name
     """
+    return tournament.swissPairings()
 
 
