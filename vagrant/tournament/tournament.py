@@ -10,15 +10,13 @@ import tournament_mod
 import person_mod
 
 # init database access objects
-tournamentDb = db.DB("dbname=tournament")
-matches = match_mod.MatchStore(tournamentDb)
+tournamentDb = db.DB("tournament")
+persons = person_mod.PersonStore(tournamentDb)
 registrations = registration_mod.RegistrationStore(tournamentDb)
+matches = match_mod.MatchStore(tournamentDb)
 tournaments = tournament_mod.TournamentStore(tournamentDb)
 tournaments.deleteAll()
-tournaments.createTournament("test")
-tournament = tournaments.getByName("test")
-print "initialized: ", tournament
-persons = person_mod.PersonStore(tournamentDb)
+tournament = tournaments.createTournament("test",registrations,matches,persons)
 
 def deleteMatches():
     """Remove all the match records from the database."""
