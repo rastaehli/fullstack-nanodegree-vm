@@ -33,7 +33,8 @@ class PersonStore():
 
     def createPerson(self, name, born):
         """create registration for person with name in tournament"""
-        self.db.execute("INSERT INTO PERSON (name,born) VALUES(%s,%s);",(name, born,))
+        self.db.execute(
+            "INSERT INTO PERSON (name,born) VALUES(%s,%s);", (name, born,))
 
 
 class Person():

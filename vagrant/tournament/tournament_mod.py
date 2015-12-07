@@ -1,5 +1,6 @@
 import standings
 
+
 class TournamentStore():
 
     def __init__(self, db):
@@ -7,21 +8,24 @@ class TournamentStore():
 
     def deleteAll(self):
         """Remove all the records from the database."""
-        self.db.execute("DELETE FROM TOURNAMENT;",())
+        self.db.execute("DELETE FROM TOURNAMENT;", ())
 
     def createTournament(self, name, registrations, matches, players):
         """create new tournament"""
-        self.db.execute("INSERT INTO TOURNAMENT (name, round) VALUES(%s,0);", (name,))
-        result = self.db.fetchAll("SELECT id FROM TOURNAMENT WHERE name=%s;", (name,))
+        self.db.execute(
+            "INSERT INTO TOURNAMENT (name, round) VALUES(%s,0);", (name,))
+        result = self.db.fetchAll(
+            "SELECT id FROM TOURNAMENT WHERE name=%s;", (name,))
         id = result[0][0]
-        return Tournament(id,name,0,registrations,matches,players)
+        return Tournament(id, name, 0, registrations, matches, players)
 
     def getByName(self, name):
         result = self.db.fetchAll(
             "SELECT * FROM TOURNAMENT WHERE name=%s;", (name,))
         if len(result) == 1:
             row = result[0]
-            tournament = Tournament(row[0], row[1], row[2], registrations, matches)
+            tournament = Tournament(
+                row[0], row[1], row[2], registrations, matches)
             return tournament
         elif len(result) > 1:
             raise NameError("more than one tournament with name: %s" % name)
@@ -29,7 +33,8 @@ class TournamentStore():
             return None
 
     def recordScores(self, match):
-        self.db.execute("UPDATE MATCH m SET m.SCORE1=%s, m.SCORE2=%s WHERE m.id=%s;" , (match.score1, match.score2, match.id))
+        self.db.execute("UPDATE MATCH m SET m.SCORE1=%s, m.SCORE2=%s WHERE m.id=%s;",
+                        (match.score1, match.score2, match.id))
 
 
 class Tournament():
@@ -42,8 +47,8 @@ class Tournament():
         self.matches = matches
         self.players = players
 
-    def recordOutcome(self, winner,loser):
-        self.matches.recordOutcome(self,winner,loser)
+    def recordOutcome(self, winner, loser):
+        self.matches.recordOutcome(self, winner, loser)
 
     def getStandings(self):
         standingsMap = {}
@@ -54,7 +59,7 @@ class Tournament():
             regId = reg[0]
             playerId = reg[1]
             name = self.players.getById(playerId).name
-            standingsMap[regId] = standings.Standings(regId,name)
+            standingsMap[regId] = standings.Standings(regId, name)
 
         """then tally wins/losses from each match"""
         allMatches = self.matches.allMatches(self)
@@ -74,12 +79,12 @@ class Tournament():
 
     def swissPairings(self):
         """Returns a list of pairs of players for the next round of a match.
-      
+
         Assuming that there are an even number of players registered, each player
         appears exactly once in the pairings.  Each player is paired with another
         player with an equal or nearly-equal win record, that is, a player adjacent
         to him or her in the standings.
-      
+
         Returns:
           A list of tuples, each of which contains (id1, name1, id2, name2)
             id1: the first player's unique id
@@ -95,18 +100,16 @@ class Tournament():
             if player1 == None:
                 player1 = (s.regId, s.name)
             else:
-                pairings.append((player1[0],player1[1],s.regId,s.name))
+                pairings.append((player1[0], player1[1], s.regId, s.name))
                 player1 = None
         return pairings
 
     def playerStandings(self):
         tuples = []
         for s in self.getStandings():
-            tuples.append( (s.regId, s.name, s.winTally, s.matchTally))
+            tuples.append((s.regId, s.name, s.winTally, s.matchTally))
         return tuples
- 
+
 
 def getWins(standings):
     return standings.winTally
-
-
