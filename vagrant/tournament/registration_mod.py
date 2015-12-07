@@ -18,6 +18,13 @@ class RegistrationStore():
         rows = self.db.fetchAll("SELECT id, player FROM REGISTRATION WHERE tournament=%s;", (tournament,))
         return rows
 
+    def getNameById(self, tournament, id):
+        rows = self.db.fetchAll("SELECT player FROM REGISTRATION WHERE TOURNAMENT=%s AND ID=%s;", (tournament.id, id,))
+        if len(rows) < 1:
+            return None
+        person = self.persons.getById(rows[0][0])
+        return person.name
+                
     def createRegistration(self, name, tournament):
         """create registration for person with name in tournament"""
         person = self.persons.getByName(name)
