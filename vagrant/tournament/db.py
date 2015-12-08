@@ -1,6 +1,8 @@
 import psycopg2
 
-
+# Convenience wrapper for database access via psycopg2.
+# Responsible for opening/closing connections, managing 
+# transactions.
 class DB():
 
     def __init__(self, dbname):

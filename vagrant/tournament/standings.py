@@ -1,3 +1,5 @@
+# Standings is responsible for attributes of a players
+# status in a tournament: the number of wins, losses, etc.
 class Standings():
 
     def __init__(self, regId, name):

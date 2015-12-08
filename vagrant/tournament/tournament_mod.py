@@ -1,6 +1,7 @@
 import standings
 
-
+# TournamentStore is responsible for access to a persistent 
+# collection of Tournament records in the database.
 class TournamentStore():
 
     def __init__(self, db):
@@ -32,11 +33,10 @@ class TournamentStore():
         else:
             return None
 
-    def recordScores(self, match):
-        self.db.execute("UPDATE MATCH m SET m.SCORE1=%s, m.SCORE2=%s WHERE m.id=%s;",
-                        (match.score1, match.score2, match.id))
 
-
+# Tournament is responsible for access to attributes of a tournament
+# including the relationshipes between players, registrations, matches
+# and so forth.
 class Tournament():
 
     def __init__(self, id, name, round, registrations, matches, players):

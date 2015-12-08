@@ -1,3 +1,5 @@
+# MatchStore is responsible for access to a persistent
+# collection of tournament Match records in the database.
 class MatchStore():
 
     def __init__(self, db):
@@ -62,7 +64,8 @@ class MatchStore():
                 matchUpdate.p1,
                 matchUpdate.p2,))
 
-
+# Match is responsible for attributes of a tournament
+# 'match' between two players.
 class Match():
 
     def __init__(self, tournament, player1, player2):

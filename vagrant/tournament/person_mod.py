@@ -1,3 +1,5 @@
+# PersonStore is responsible for access to a persistent
+# collection of Person records in the database.
 class PersonStore():
 
     def __init__(self, db):
@@ -36,7 +38,8 @@ class PersonStore():
         self.db.execute(
             "INSERT INTO PERSON (name,born) VALUES(%s,%s);", (name, born,))
 
-
+# Person is responsible for attributes of a player
+# needed by this tournament application.
 class Person():
 
     def __init__(self, id, name, born):

@@ -1,6 +1,7 @@
 import person_mod
 
-
+# RegistrationStore is responsible for access to persistent
+# collection of Registration records in the database.
 class RegistrationStore():
 
     def __init__(self, db):
@@ -38,7 +39,13 @@ class RegistrationStore():
         self.db.execute(
             "INSERT INTO REGISTRATION (PLAYER,TOURNAMENT) VALUES(%s,%s);", (person.id, tournament.id))
 
-
+# Registration is responsible for properties of an
+# individual registration of a player in a tournament.
+# A player may register in multiple tournaments, so
+# the unique registration id is used to identify the
+# player in this tournament, but player attributes
+# like name are still the responsibility of the 
+# Person class.
 class Registration():
 
     def __init__(self, id, player, tournament):
