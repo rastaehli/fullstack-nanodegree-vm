@@ -1,4 +1,3 @@
-import standings
 
 # TournamentStore is responsible for access to a persistent 
 # collection of Tournament records in the database.
@@ -50,33 +49,6 @@ class Tournament():
     def recordOutcome(self, winner, loser):
         self.matches.recordOutcome(self, winner, loser)
 
-    def getStandings(self):
-        standingsMap = {}
-        allRegistrations = self.registrations.allRegistrations(self.id)
-
-        """initialize map with empty standings for each players regId"""
-        for reg in allRegistrations:
-            regId = reg[0]
-            playerId = reg[1]
-            name = self.players.getById(playerId).name
-            standingsMap[regId] = standings.Standings(regId, name)
-
-        """then tally wins/losses from each match"""
-        allMatches = self.matches.allMatches(self)
-        for match in allMatches:
-            p1Standings = standingsMap[match.p1]
-            p2Standings = standingsMap[match.p2]
-            if match.score1 > match.score2:
-                p1Standings.tallyWin()
-                p2Standings.tallyLoss()
-            elif match.score1 == match.score2:
-                p1Standings.tallyDraw()
-                p2Standings.tallyDraw()
-            else:
-                p1Standings.tallyLoss()
-                p2Standings.tallyWin()
-        return standingsMap.values()
-
     def swissPairings(self):
         """Returns a list of pairs of players for the next round of a match.
 
@@ -92,27 +64,23 @@ class Tournament():
             id2: the second player's unique id
             name2: the second player's name
         """
-        standings = self.getStandings()
+        standings = self.matches.tallyWins(self)
         standings = sorted(standings, key=getWins)
         pairings = []
         player1 = None
         for s in standings:
             if player1 == None:
-                player1 = (s.regId, s.name)
+                # remember first player for next pairing
+                player1 = (s[0], s[1])
             else:
-                pairings.append((player1[0], player1[1], s.regId, s.name))
+                # create pairing with second player
+                pairings.append((player1[0], player1[1], s[0], s[1]))
                 player1 = None
         return pairings
-
-    # def playerStandings(self):
-    #     tuples = []
-    #     for s in self.getStandings():
-    #         tuples.append((s.regId, s.name, s.winTally, s.matchTally))
-    #     return tuples
 
     def playerStandings(self):
         return self.matches.tallyWins(self)
 
-
-def getWins(standings):
-    return standings.winTally
+def getWins(standingTuple):
+    # tuple structure is (id,name,wins,matches)
+    return standingTuple[2]
