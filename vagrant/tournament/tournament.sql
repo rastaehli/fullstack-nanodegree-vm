@@ -32,6 +32,23 @@ CREATE TABLE PERSON(
 	name VARCHAR(128),  -- display name for this PERSON
 	born TIMESTAMP);	-- date this person was born
 
+CREATE VIEW outcomes (tournament, round, player, win, match) AS 
+    SELECT 
+        tournament,
+        round,
+        p1 AS player, 
+        CASE WHEN score1 > score2 THEN 1 ELSE 0 END, 
+        1 
+    FROM match
+    UNION ALL
+    SELECT 
+        tournament,
+        round,
+        p2 AS player, 
+        CASE WHEN score2 > score1 THEN 1 ELSE 0 END, 
+        1 
+    FROM match;
+
 -- example use:
 --
 -- insert into tournament (name, round) values('test tournament',0);

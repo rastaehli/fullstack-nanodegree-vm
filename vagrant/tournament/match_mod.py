@@ -64,6 +64,18 @@ class MatchStore():
                 matchUpdate.p1,
                 matchUpdate.p2,))
 
+    # this uses a view for a more complex query over MATCH and related tables    
+    def tallyWins(self, tournament):
+        query = """SELECT r.id, p.name, COALESCE(SUM(o.win),0), COALESCE(SUM(o.match),0) 
+            FROM registration r 
+            LEFT OUTER JOIN outcomes o ON o.player = r.id AND o.tournament = r.tournament
+            JOIN person p ON r.player = p.id
+            WHERE r.tournament = %s AND (o.round = %s OR o.round is NULL)
+            GROUP BY r.id, p.name
+            ORDER BY SUM(o.win) DESC;"""
+        return self.db.fetchAll(query, (tournament.id, tournament.round))
+
+
 # Match is responsible for attributes of a tournament
 # 'match' between two players.
 class Match():

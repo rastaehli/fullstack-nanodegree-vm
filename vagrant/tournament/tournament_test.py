@@ -124,6 +124,41 @@ def testPairings():
             "After one match, players with one win should be paired.")
     print "8. After one match, players with one win are paired."
 
+def testTournament():
+    deleteMatches()
+    deletePlayers()
+    registerPlayer("p1F")
+    registerPlayer("p2B")
+    registerPlayer("p3A")
+    registerPlayer("p4C")
+    registerPlayer("p5E")
+    registerPlayer("p6D")
+    pairings = swissPairings()
+    for pair in pairings:
+        giveWinByCapitalLetter(pair)
+    pairings = swissPairings()
+    if len(pairings) != 3:
+        raise ValueError(
+            "For six players, swissPairings should return three pairs.")
+    for pair in pairings:
+        giveWinByCapitalLetter(pair)
+    pairings = swissPairings()
+    if len(pairings) != 3:
+        raise ValueError(
+            "For six players, swissPairings should return three pairs.")
+    print "9. After two matches, players with two wins are paired."
+
+def giveWinByCapitalLetter(pair):
+    name1 = pair[1]
+    name2 = pair[3]
+    regId1 = pair[0]
+    regId2 = pair[2]
+    # use capital letter (index 3) in name to determine winner
+    if name1[2] < name2[2]:
+        reportMatch(regId1, regId2)
+    else:
+        reportMatch(regId2, regId1)
+
 
 if __name__ == '__main__':
     testDeleteMatches()
@@ -134,6 +169,7 @@ if __name__ == '__main__':
     testStandingsBeforeMatches()
     testReportMatches()
     testPairings()
+    testTournament()
     print "Success!  All tests pass!"
 
 

@@ -32,7 +32,7 @@ class TournamentStore():
             raise NameError("more than one tournament with name: %s" % name)
         else:
             return None
-
+    
 
 # Tournament is responsible for access to attributes of a tournament
 # including the relationshipes between players, registrations, matches
@@ -104,11 +104,14 @@ class Tournament():
                 player1 = None
         return pairings
 
+    # def playerStandings(self):
+    #     tuples = []
+    #     for s in self.getStandings():
+    #         tuples.append((s.regId, s.name, s.winTally, s.matchTally))
+    #     return tuples
+
     def playerStandings(self):
-        tuples = []
-        for s in self.getStandings():
-            tuples.append((s.regId, s.name, s.winTally, s.matchTally))
-        return tuples
+        return self.matches.tallyWins(self)
 
 
 def getWins(standings):
