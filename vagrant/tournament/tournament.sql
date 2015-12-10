@@ -6,31 +6,32 @@ CREATE DATABASE tournament;
 \c tournament;
 
 DROP TABLE IF EXISTS MATCH;
-CREATE TABLE MATCH(
-	tournament INTEGER,	-- GUID for row in TOURNAMENT table
-	round INTEGER,  -- identifies the tournament round this match belongs to
-	p1 INTEGER,  -- GUID for row in REGISTRATION table for player 1
-	score1 INTEGER,  -- score for player 1 in this match, NULL until match ourcome recoreded
-	p2 INTEGER,  -- GUID for row in REGISTRATION table for player 2
-	score2 INTEGER);  -- score for player 2 in this match, NULL until match ourcome recoreded
-
 DROP TABLE IF EXISTS TOURNAMENT;
+DROP TABLE IF EXISTS REGISTRATION;
+DROP TABLE IF EXISTS PERSON;
+
 CREATE TABLE TOURNAMENT(
-	id SERIAL UNIQUE,  -- GUID for this row
+	id SERIAL UNIQUE PRIMARY KEY,  -- GUID for this row
 	name VARCHAR(128),	-- display name for this TOURNAMENT 
 	round INTEGER);  -- identifies the current round to be played, NULL when done
 
-DROP TABLE IF EXISTS REGISTRATION;
-CREATE TABLE REGISTRATION(
-	id SERIAL UNIQUE,  -- GUID for this row
-	player INTEGER,  -- GUID for row in PERSON table - the person registered
-	tournament INTEGER);	-- GUID for row in TOURNAMENT table - the tournament entered
-
-DROP TABLE IF EXISTS PERSON;
 CREATE TABLE PERSON(
-	id SERIAL UNIQUE,  -- GUID for this row
+	id SERIAL UNIQUE PRIMARY KEY,  -- GUID for this row
 	name VARCHAR(128),  -- display name for this PERSON
 	born TIMESTAMP);	-- date this person was born
+
+CREATE TABLE REGISTRATION(
+	id SERIAL UNIQUE PRIMARY KEY,  -- GUID for this row
+	player INTEGER REFERENCES PERSON,  -- GUID for row in PERSON table - the person registered
+	tournament INTEGER REFERENCES TOURNAMENT);	-- GUID for row in TOURNAMENT table - the tournament entered
+
+CREATE TABLE MATCH(
+	tournament INTEGER REFERENCES TOURNAMENT,	-- GUID for row in TOURNAMENT table
+	round INTEGER,  -- identifies the tournament round this match belongs to
+	p1 INTEGER REFERENCES REGISTRATION,  -- GUID for row in REGISTRATION table for player 1
+	score1 INTEGER,  -- score for player 1 in this match, NULL until match ourcome recoreded
+	p2 INTEGER REFERENCES REGISTRATION,  -- GUID for row in REGISTRATION table for player 2
+	score2 INTEGER);  -- score for player 2 in this match, NULL until match ourcome recoreded
 
 CREATE VIEW outcomes (tournament, round, player, win, match) AS 
     SELECT 

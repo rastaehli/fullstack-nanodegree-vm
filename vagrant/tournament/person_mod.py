@@ -1,3 +1,5 @@
+import registration_mod
+
 # PersonStore is responsible for access to a persistent
 # collection of Person records in the database.
 class PersonStore():
@@ -6,7 +8,9 @@ class PersonStore():
         self.db = db
 
     def deleteAll(self):
-        """Remove all the registration records from the database."""
+        """Remove all the records from the database."""
+        # first remove all registrations that reference persons
+        registration_mod.RegistrationStore(self.db).deleteAll()
         self.db.execute("DELETE FROM PERSON;", ())
 
     def getByName(self, name):

@@ -1,4 +1,5 @@
 import person_mod
+import match_mod
 
 # RegistrationStore is responsible for access to persistent
 # collection of Registration records in the database.
@@ -11,6 +12,8 @@ class RegistrationStore():
 
     def deleteAll(self):
         """Remove all the registration records from the database."""
+        # first delete all matches that reference registrations
+        match_mod.MatchStore(self.db).deleteAll()
         self.db.execute("DELETE FROM REGISTRATION;", ())
 
     def countAll(self):

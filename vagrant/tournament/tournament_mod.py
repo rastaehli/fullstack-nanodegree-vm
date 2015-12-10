@@ -1,4 +1,6 @@
 
+import registration_mod
+
 # TournamentStore is responsible for access to a persistent 
 # collection of Tournament records in the database.
 class TournamentStore():
@@ -8,6 +10,8 @@ class TournamentStore():
 
     def deleteAll(self):
         """Remove all the records from the database."""
+        # first remove registrations that reference tournaments
+        registration_mod.RegistrationStore(self.db).deleteAll()
         self.db.execute("DELETE FROM TOURNAMENT;", ())
 
     def createTournament(self, name, registrations, matches, players):
