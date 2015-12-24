@@ -1,4 +1,4 @@
-fullstack-nanodegree-vm
+tournament-database project
 =============
 
 Forked from the Udacity fullstack-nanodegree-vm repository, this project contains my solution for storing Tournament results in a Postgres database and computing  “Swiss Pairings” for each round of matches.
